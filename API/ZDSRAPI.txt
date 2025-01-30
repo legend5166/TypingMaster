@@ -1,0 +1,46 @@
+争渡读屏API（ZDSRAPI）是争渡读屏提供的一组接口。
+
+32位接口 ZDSRAPI.dll;
+64位接口 ZDSRAPI_x64.dll;
+用户自定义参数配置文件 ZDSRAPI.ini
+应用程序把接口dll和ini文件放入自己应用目录下调用即可获得相关功能。
+ZDSRAPI.ini的参数设定优先级高于程序调用
+
+
+名称： 争渡读屏API(ZDSRAPI)
+版本： 1
+
+语音控制组 用户程序可将自己的程序信息发送到争渡读屏进行朗读.
+
+1.初始化语音接口
+int WINAPI InitTTS(int type, const WCHAR* channelName, BOOL bKeyDownInterrupt)
+参数:
+	[in] int type: 0 读屏通道; 1 独立通道
+	[in] const WCHAR* channelName: type为0时忽略,传入NULL; type为1时:独立通道名称, NULL或空字符串时,将使用默认名称"API"
+	[in] BOOL bKeyDownInterrupt: TRUE 按键打断; FALSE 按键不打断
+
+返回值:
+    0:成功
+    1:版本不匹配
+
+2.朗读文本
+int WINAPI Speak(const WCHAR* text, BOOL bInterrupt)
+参数:
+    [in] const WCHAR* text:   要朗读的文本,Unicode
+	[in] BOOL bInterrupt:   	TRUE:清空排队,立刻打断朗读, FALSE:等待空闲时朗读
+返回值:
+	0:	成功
+	1:	版本不匹配
+	2:	ZDSR没有运行
+
+3.获取朗读状态
+int WINAPI GetSpeakState()
+返回值:
+	1:	版本不匹配
+	2:	ZDSR没有运行
+    3:	正在朗读
+    4:	没有朗读
+
+4.停止朗读
+void WINAPI StopSpeak()
+返回值: void
