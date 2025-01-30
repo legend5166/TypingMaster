@@ -1,7 +1,6 @@
 .vscode/
 __pycache__/
 API/nvda_2024.3.1_controllerClient/
-config/
 references/
 build/
 dist/
