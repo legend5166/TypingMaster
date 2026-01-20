@@ -1,4 +1,9 @@
-## Typing Master
+## DK-打字通 (Typing Master)
+
+
+### V1.2.0
+
+1.  播报方式新增 UIA 应用通知
 
 ---
 

@@ -1,6 +1,7 @@
 import wx
 import re
 import requests
+import urllib3
 from bs4 import BeautifulSoup
 from datetime import datetime
 from utility import (
@@ -17,6 +18,8 @@ from BaseUI import (
 	WuBiDialog,
 	HanZiDialog,
 	)
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class WuBiSearchDialog(WuBiDialog):
 	def __init__(self, *args, **kwds):
@@ -143,7 +146,7 @@ class HanZiSearchDialog(HanZiDialog):
 			'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36 Edg/104.0.1293.70',
 			'Referer':'https://www.hanzipi.com/',
 		}
-		response = requests.get(url, headers=headers)
+		response = requests.get(url, headers=headers, verify=False)
 		if response.status_code != 200:
 			return f'请求失败，错误码： {response.status_code}'
 		response.encoding = 'utf-8'

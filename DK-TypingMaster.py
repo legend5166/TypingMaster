@@ -4,10 +4,9 @@ import dialog
 import utility
 import showImage
 from  neural import NeuralSynthesizer
-import api
+import api_call
 from threading import Thread
 from datetime import datetime
-import webbrowser
 import random
 import logging, sys
 
@@ -170,7 +169,10 @@ class TypingMaster(BaseUI.TypingMaster):
 
 	def _SpeakWithLiveRegion(self, text, **kwds):
 		self.label_notification.SetLabel(text)
-		api.live_region_changed(self.label_notification.GetHandle())
+		api_call.live_region_changed(self.label_notification.GetHandle())
+
+	def _SpeakWithUIA(self, text, **kwds):
+		api_call.notify_from_wx(self.label_display, text)
 
 	def _SpeakWithNeural(self, text, **kwds):
 		if self.synth.is_speaking: self.synth.stop()
@@ -243,7 +245,7 @@ class TypingMaster(BaseUI.TypingMaster):
 
 	def SpeakWord(self, word):
 		self.label_notification.SetLabel(word)
-		api.live_region_changed(self.label_notification.GetHandle())
+		api_call.live_region_changed(self.label_notification.GetHandle())
 
 	def OnTypingText(self, evt):
 		if not self.processing:
@@ -440,8 +442,10 @@ class TypingMaster(BaseUI.TypingMaster):
 			'speak_mode':self.speak_mode,
 			})
 			if self.speak_mode == 0:
-				self.SpeakText = self._SpeakWithLiveRegion
+				self.SpeakText = self._SpeakWithUIA
 			elif self.speak_mode == 1:
+				self.SpeakText = self._SpeakWithLiveRegion
+			elif self.speak_mode == 2:
 				self.synth = NeuralSynthesizer()
 				self.SpeakText = self._SpeakWithNeural
 				self.voice = dlg.choice_voice.GetStringSelection()
@@ -454,10 +458,10 @@ class TypingMaster(BaseUI.TypingMaster):
 					'pitch': self.pitch,
 					'volume': self.volume,
 				})
-			elif self.speak_mode ==2:
+			elif self.speak_mode ==3:
 				self.speak_api = utility.SRAPI('ZDSRAPI.dll', error_msg=True)
 				self.SpeakText = self._SpeakWithSpeakAPI
-			elif self.speak_mode == 3:
+			elif self.speak_mode == 4:
 				self.speak_api = utility.SRAPI('nvdaControllerClient.dll', error_msg=True)
 				self.SpeakText = self._SpeakWithSpeakAPI
 
@@ -496,8 +500,8 @@ class TypingMaster(BaseUI.TypingMaster):
 			img_window.Show()
 
 	def OnQQGroupNumber(self, evt):
-		info = f'大可小筑\n951516588\n加群口令：\n666\n'
-		dlg = wx.MessageDialog(self, info, f'大可小筑 951516588', wx.OK|wx.CANCEL|wx.ICON_QUESTION)
+		info = f'大可小筑\n958862656\n加群口令：\n666\n'
+		dlg = wx.MessageDialog(self, info, f'大可小筑 958862656', wx.OK|wx.CANCEL|wx.ICON_QUESTION)
 		dlg.SetOKLabel('复制群号到剪贴板')
 		if dlg.ShowModal() == wx.ID_OK:
 			if wx.TheClipboard.IsOpened() or wx.TheClipboard.Open():
@@ -507,7 +511,8 @@ class TypingMaster(BaseUI.TypingMaster):
 		dlg.Destroy()
 
 	def OnQQLink(self, evt):
-		url = 'http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=3GO65fdFxsmfavpUR6NjC3IZJ21-2Tmv&authKey=RmacQwC5l6%2FSmdbmisRSJoGNWbMxXqGXAtcqx%2BBhiL%2FeAbe8t6s%2B4Vu7pmDBx5gv&noverify=0&group_code=951516588'
+		import webbrowser
+		url = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=SF78N-ipy-mwq-7IgLwzvvaVF7w8bOAT&authKey=OfZTWupS02lGBHE8so0k8U%2FiDVp9d09RBYObAhVr1XyM7oVkgCZN37rmWWJda9O8&noverify=0&group_code=958862656"
 		webbrowser.open(url)
 
 	def OnQQQRCode(self, evt):
@@ -525,14 +530,14 @@ class MyApp(wx.App):
 	def OnInit(self):
 		self.single_instance_checker = wx.SingleInstanceChecker('dake_typing_master')
 		if self.single_instance_checker.IsAnotherRunning():
-			api.set_foreground_window_by_title('DK-打字通')
+			api_call.set_foreground_window_by_title('DK-打字通')
 			return False
 
 		# logging.basicConfig(filename=utility.get_path('typing_master.log', 'config', False), level=logging.ERROR,
 							# format='%(asctime)s - %(levelname)s - %(message)s') # - %(funcName)s - Line:%(lineno)d')
 		# sys.excepthook = self.log_uncaught_exceptions
 
-		self.locale = wx.Locale(wx.LANGUAGE_DEFAULT)
+		# self.locale = wx.Locale(wx.LANGUAGE_DEFAULT)
 		self.locale = wx.Locale(wx.LANGUAGE_CHINESE_SIMPLIFIED)
 		self.frame = TypingMaster(None, wx.ID_ANY, "")
 		self.SetTopWindow(self.frame)

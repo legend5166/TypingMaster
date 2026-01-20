@@ -4,7 +4,7 @@ import dialog
 import logging, sys
 import utility
 import showImage
-import api
+import api_call
 from threading import Thread
 from datetime import datetime
 import webbrowser
@@ -179,7 +179,7 @@ class TypingMaster(BaseUI.TypingMaster):
 
 	def _SpeakWithLiveRegion(self, text, **kwds):
 		self.label_notification.SetLabel(text)
-		api.live_region_changed(self.label_notification.GetHandle())
+		api_call.live_region_changed(self.label_notification.GetHandle())
 
 	def _SpeakWithNeural(self, text, **kwds):
 		if self.synth.is_speaking: self.synth.stop()
@@ -252,7 +252,7 @@ class TypingMaster(BaseUI.TypingMaster):
 
 	def SpeakWord(self, word):
 		self.label_notification.SetLabel(word)
-		api.live_region_changed(self.label_notification.GetHandle())
+		api_call.live_region_changed(self.label_notification.GetHandle())
 
 	def OnTypingText(self, evt):
 		if not self.processing:
@@ -535,7 +535,7 @@ class MyApp(wx.App):
 	def OnInit(self):
 		self.single_instance_checker = wx.SingleInstanceChecker('dake_typing_master')
 		if self.single_instance_checker.IsAnotherRunning():
-			api.set_foreground_window_by_title('DK-打字通')
+			api_call.set_foreground_window_by_title('DK-打字通')
 			return False
 
 		# logging.basicConfig(filename=utility.get_path('typing_master.log', 'config', False), level=logging.ERROR,
