@@ -257,9 +257,11 @@ class MyPreferencesDialog(PreferencesDialog):
 	def OnListen(self, evt):
 		text = '你好，你们的你，好坏的好'
 		string = self.choice_speak_mode.GetStringSelection()
-		if string == '读屏':
+		if string == '应用通知':
+			self.Parent._SpeakWithUIA(text)
+		elif string == '活动区域':
 			self.Parent._SpeakWithLiveRegion(text)
-		elif string == '内置语音库':
+		elif string == '自然语音':
 			self.Parent._SpeakWithNeural(text,
 			voice = self.choice_voice.GetStringSelection(),
 			rate = convert_speak_parameter_to_string((self.slider_rate.GetValue() - 50)*4),
@@ -277,7 +279,7 @@ class MyPreferencesDialog(PreferencesDialog):
 
 	def OnSpeakMode(self, evt):
 		string = evt.GetString()
-		flag = string == '内置语音库'
+		flag = string == '自然语音'
 		self.SetVoiceCtrl(flag)
 
 	def SetVoiceCtrl(self, flag):
